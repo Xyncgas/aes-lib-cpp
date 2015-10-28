@@ -72,8 +72,9 @@ void KeySchedule::core(BYTE * word, int i)
 	rotate(word);
 
 	//apply s box on word
+	//decrypt sub uses standard sbox
 	for (int j = 0; j < 4; j++)
-		word[j]	=	Structure::getSboxEntry(word[j]);
+		word[j]	=	Structure::getSboxEntry(word[j], Mode::ENCRYPT);
 
 	//xor round coefficient to left most byte
 	addRoundCoeff(word[0], i);

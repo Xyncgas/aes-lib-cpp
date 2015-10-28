@@ -7,16 +7,22 @@
 typedef std::bitset<8> BYTE;
 typedef BYTE State[4][4];
 
+enum Mode
+{
+	ENCRYPT,
+	DECRYPT
+};
+
 class Structure
 {
 public:
-	static BYTE getSboxEntry(int row, int column);
+	static BYTE getSboxEntry(int row, int column, Mode mode);
 
-	static BYTE getSboxEntry(BYTE bin);
+	static BYTE getSboxEntry(BYTE bin, Mode mode);
 
 	static BYTE getRconEntry(int index);
 
-	static BYTE getMixColEntry(int row, int column);
+	static BYTE getMixColEntry(int row, int column, Mode mode);
 
 	static std::vector<BYTE> getColumn(const State state, int column);
 
@@ -29,9 +35,13 @@ public:
 private:
 	static unsigned char sbox[16][16];
 
+	static unsigned char inverseSbox[16][16];
+
 	static unsigned char rcon[256];
 
 	static BYTE mixColMatrix[4][4];
+
+	static BYTE inverseMixColMatrix[4][4];
 };
 
 #endif

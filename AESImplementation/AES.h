@@ -9,9 +9,9 @@ class AES
 public:
 	static void encrypt(State &state, Key &privateKey, KeyLength length);
 
-	static void encrypt(BYTE state[16], BYTE privateKey[16], KeyLength length);
+	static void encrypt(State &state, BYTE bytes[16], BYTE privateKey[16], KeyLength length);
 
-	static void decrypt(BYTE state[16], BYTE privateKey[16], KeyLength length);
+	static void decrypt(State &state, BYTE bytes[16], BYTE privateKey[16], KeyLength length);
 
 	static void decrypt(State &state, Key &privateKey, KeyLength length);
 

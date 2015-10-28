@@ -4,18 +4,23 @@
 #include "Structure.h"
 #include "KeyShedule.h"
 
-
 class Engine
 {
 public:
 
-	static void byteSub(State &state);
+	static void byteSub(State &state, Mode mode);
 
-	static void shiftRows(State &state);
+	static void inverseByteSub(State &state);
+
+	static void shiftRows(State &state, Mode mode);
+
+	static void inverseShiftRows(State &state);
 
 	static void shiftRow(BYTE * row, int numPositions);
 
-	static void mixColumns(State &state);
+	static void mixColumns(State &state, Mode mode);
+
+	static void inverseMixColumns(State &state);
 
 	static void keyAddition(State &state, const Key subkey);
 

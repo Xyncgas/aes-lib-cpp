@@ -5,23 +5,36 @@
 #include <iostream>
 
 
-void Engine::byteSub(State &state)
+void Engine::byteSub(State &state, Mode mode)
 {
 	for (int row = 0; row < 4; row++)
+	{
 		for (int col = 0; col < 4; col++)
-			state[row][col] = Structure::getSboxEntry(state[row][col]);
+		{
+			if (mode == Mode::ENCRYPT)
+				state[row][col] = Structure::getSboxEntry(state[row][col], mode);
+
+			else if (mode == Mode::DECRYPT)
+				state[row][col] = Structure::getSboxEntry(state[row][col], mode);
+		}
+	}
 }
 
-void Engine::shiftRows(State &state)
+void Engine::shiftRows(State &state, Mode mode)
 {
-	//second row: shift right 3 bytes
-	shiftRow(state[1], 3);
+	if (mode == Mode::ENCRYPT)
+	{
+		//shifts rows 1..4 in state 3..1 positions right
+		for (int numPositions = 3, row = 1; numPositions > 0; numPositions--, row++)
+			shiftRow(state[row], numPositions);
+	}
 
-	//third row: shift right 2 bytes
-	shiftRow(state[2], 2);
-
-	//fourth row: shift right 1 bytes
-	shiftRow(state[3], 1);
+	else if (mode == Mode::DECRYPT)
+	{
+		//shifts rows 1..4 in state 1..3 positions right
+		for (int numPositions = 1, row = 1; numPositions > 0; numPositions++, row++)
+			shiftRow(state[row], numPositions);
+	}
 }
 
 void Engine::shiftRow(BYTE * row, int numPositions)
@@ -36,17 +49,17 @@ void Engine::shiftRow(BYTE * row, int numPositions)
 	memcpy(row, temp, sizeof(temp));
 }
 
-void Engine::mixColumns(State &state)
+void Engine::mixColumns(State &state, Mode mode)
 {
 	State temp;
 	for (int row = 0; row < 4; row++)
 	{
 		for (int col = 0; col < 4; col++)
 		{ 
-			temp[col][row]	= mixMultiply(state[0][row], Structure::getMixColEntry(col, 0))
-							^ mixMultiply(state[1][row], Structure::getMixColEntry(col, 1))
-							^ mixMultiply(state[2][row], Structure::getMixColEntry(col, 2))
-							^ mixMultiply(state[3][row], Structure::getMixColEntry(col, 3)); 
+			temp[col][row]	= mixMultiply(state[0][row], Structure::getMixColEntry(col, 0, mode))
+							^ mixMultiply(state[1][row], Structure::getMixColEntry(col, 1, mode))
+							^ mixMultiply(state[2][row], Structure::getMixColEntry(col, 2, mode))
+							^ mixMultiply(state[3][row], Structure::getMixColEntry(col, 3, mode)); 
 		}
 	} 
 
