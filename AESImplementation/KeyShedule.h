@@ -23,7 +23,7 @@ public:
 	KeySchedule();
 	virtual ~KeySchedule();
 
-	void setKey(int roundNum, Key &key);
+	void setRoundKey(int roundNum, Key &key);
 	BYTE addRoundCoeff(BYTE &byte, int i);
 	void core(BYTE *word, int i);
 	void rotate(BYTE *word);

@@ -14,6 +14,8 @@ public:
 	static void decrypt(BYTE state[16], BYTE privateKey[16], KeyLength length);
 
 	static void decrypt(State &state, Key &privateKey, KeyLength length);
+
+	static int getNumRounds(KeyLength length);
 };
 
 #endif

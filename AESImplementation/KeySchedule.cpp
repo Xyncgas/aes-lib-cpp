@@ -86,7 +86,7 @@ BYTE KeySchedule::addRoundCoeff(BYTE &byte, int i)
 	return byte ^= Structure::getRconEntry(i);
 }
 
-void KeySchedule::setKey(int roundNum, Key &key)
+void KeySchedule::setRoundKey(int roundNum, Key &key)
 {
 	int sIndex = (roundNum * 16);
 	for (int row = 0; row < 4; row++)

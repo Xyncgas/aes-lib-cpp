@@ -4,25 +4,8 @@
 #include "Structure.h"
 #include <iostream>
 
-const int Engine::getNumRounds(KeyLength length)
-{
-	switch (length)
-	{
-		case SMALL:
-			return 10;
-			
-		case MEDIUM:
-			return 12;
 
-		case LARGE:
-			return 14;
-
-		default:
-			return 0;
-	}
-}
-
-void Engine::subLayer(State &state)
+void Engine::byteSub(State &state)
 {
 	for (int row = 0; row < 4; row++)
 		for (int col = 0; col < 4; col++)

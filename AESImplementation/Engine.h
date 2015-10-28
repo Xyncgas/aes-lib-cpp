@@ -9,7 +9,7 @@ class Engine
 {
 public:
 
-	static void subLayer(State &state);
+	static void byteSub(State &state);
 
 	static void shiftRows(State &state);
 
