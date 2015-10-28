@@ -23,11 +23,12 @@ public:
 	KeySchedule();
 	virtual ~KeySchedule();
 
-	Key * getKey(int roundNum);
-	BYTE getRoundCoeff(int i);
-	void core(BYTE * word, int i);
-	void rotate(BYTE * word);
+	void setKey(int roundNum, Key &key);
+	BYTE addRoundCoeff(BYTE &byte, int i);
+	void core(BYTE *word, int i);
+	void rotate(BYTE *word);
 	int getNumSubkeys();
+	static void makeKey(BYTE *str, Key &key);
 
 private:
 	BYTE * schedule;

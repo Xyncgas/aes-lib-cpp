@@ -22,6 +22,8 @@ public:
 
 	static void printState(const State state);
 
+	static void makeState(BYTE str[16], State &state);
+
 	static void printRow(BYTE * row);
 
 private:

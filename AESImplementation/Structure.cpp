@@ -93,6 +93,14 @@ void Structure::printState(const State state)
 	}
 }
 
+void Structure::makeState(BYTE str[16], State &state)
+{
+	int i = 0;
+	for (int row = 0; row < 4; row++)
+		for (int col = 0; col < 4; col++)
+			state[col][row] = str[i++];
+};
+
 vector<BYTE> Structure::getColumn(const State matrix, int colNum)
 {
 	vector<BYTE> column;

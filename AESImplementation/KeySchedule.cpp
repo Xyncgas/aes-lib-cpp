@@ -76,26 +76,27 @@ void KeySchedule::core(BYTE * word, int i)
 		word[j]	=	Structure::getSboxEntry(word[j]);
 
 	//xor round coefficient to left most byte
-	word[0] ^= getRoundCoeff(i);
+	addRoundCoeff(word[0], i);
 }
 
 
-BYTE KeySchedule::getRoundCoeff(int i)
+BYTE KeySchedule::addRoundCoeff(BYTE &byte, int i)
 {
-	//get rcon entry from lookup using index i - 1
-	return Structure::getRconEntry(i);
+	//xor byte with rcon entry at index i
+	return byte ^= Structure::getRconEntry(i);
 }
 
-Key * KeySchedule::getKey(int roundNum)
+void KeySchedule::setKey(int roundNum, Key &key)
 {
-	Key key;
-
-	int sIndex = 0;
+	int sIndex = (roundNum * 16);
 	for (int row = 0; row < 4; row++)
 		for (int col = 0; col < 4; col++)
 			key[col][row] = schedule[sIndex++];
+}
 
-	return (Key *) key;
+void KeySchedule::makeKey(BYTE *str, Key &key)
+{
+	Structure::makeState(str, key);
 }
 
 int KeySchedule::getNumSubkeys()
