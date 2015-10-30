@@ -140,6 +140,40 @@ void Structure::makeState(BYTE str[16], State &state)
 			state[col][row] = str[i++];
 };
 
+State * Structure::makeStates(string text)
+{
+	int length = text.length();
+	int textIndex = 0;
+	int numStates = getNumStates(text);
+	State *st = new State[numStates];
+
+	for (int i = 0; i < numStates; i++)
+	{
+		BYTE next[16];
+		for (int j = 0; j < 16 && length > 0; j++, textIndex++, length--)
+			next[j] = BYTE(text[textIndex]);
+
+		makeState(next, st[i]);
+	}
+
+	return st;
+}
+
+string Structure::stateToString(State state)
+{
+	string str;
+	for (int row = 0; row < 4; row++)
+		for (int col = 0; col < 4; col++)
+			str += (char)state[col][row].to_ulong();
+
+	return str;
+}
+
+int Structure::getNumStates(const string text)
+{
+	return ceil((double) text.length() / 16);
+}
+
 vector<BYTE> Structure::getColumn(const State matrix, int colNum)
 {
 	vector<BYTE> column;

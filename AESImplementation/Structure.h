@@ -34,6 +34,12 @@ public:
 
 	static void copyState(State &a, State &b);
 
+	static State * makeStates(std::string text);
+
+	static int getNumStates(const std::string text);
+
+	static std::string stateToString(State state);
+
 	static void printRow(BYTE * row);
 
 private:
