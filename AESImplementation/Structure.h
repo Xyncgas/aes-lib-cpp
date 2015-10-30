@@ -30,6 +30,10 @@ public:
 
 	static void makeState(BYTE str[16], State &state);
 
+	static void addState(State &a, const State b);
+
+	static void copyState(State &a, State &b);
+
 	static void printRow(BYTE * row);
 
 private:

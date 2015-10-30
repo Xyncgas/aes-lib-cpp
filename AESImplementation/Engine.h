@@ -22,8 +22,6 @@ public:
 
 	static void inverseMixColumns(State &state);
 
-	static void keyAddition(State &state, const Key subkey);
-
 	static BYTE mixMultiply(BYTE stateEntry, BYTE mixColEntry);
 
 	static const int getNumRounds(KeyLength length);

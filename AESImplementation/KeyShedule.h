@@ -28,6 +28,7 @@ public:
 	void core(BYTE *word, int i);
 	void rotate(BYTE *word);
 	int getNumSubkeys();
+	void initSchedule(const Key key, int numRounds);
 	static void makeKey(BYTE *str, Key &key);
 
 private:

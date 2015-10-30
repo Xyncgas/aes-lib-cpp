@@ -92,7 +92,7 @@ BYTE Structure::getMixColEntry(int row, int column, Mode mode)
 	if (mode == Mode::ENCRYPT)
 		return mixColMatrix[row][column];
 
-	else if (mode == Mode::DECRYPT)
+	else
 		return inverseMixColMatrix[row][column];
 	
 }
@@ -102,7 +102,7 @@ BYTE Structure::getSboxEntry(int row, int column, Mode mode)
 	if (mode == Mode::ENCRYPT)
 		return BYTE(sbox[row][column]);
 
-	else if (mode == Mode::DECRYPT)
+	else
 		return BYTE(inverseSbox[row][column]);
 }
 
@@ -149,4 +149,18 @@ vector<BYTE> Structure::getColumn(const State matrix, int colNum)
 	column.push_back(matrix[3][colNum]);
 
 	return column;
+}
+
+void Structure::addState(State &a, const State b)
+{
+	for (int row = 0; row < 4; row++)
+		for (int col = 0; col < 4; col++)
+			a[col][row] ^= b[col][row];
+}
+
+void Structure::copyState(State &a, State &b)
+{
+	for (int row = 0; row < 4; row++)
+		for (int col = 0; col < 4; col++)
+			a[row][col] = b[row][col];
 }

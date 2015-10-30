@@ -2,18 +2,26 @@
 #include <iostream>
 #include "KeyShedule.h"
 
-KeySchedule::KeySchedule() : KeySchedule(NULL, 10) {}
+KeySchedule::KeySchedule() : KeySchedule(NULL, 0) {}
 
 KeySchedule::KeySchedule(const Key key, int numRounds)
 {
-	numSubkeys	=	numRounds + 1;
-	schedule	=	new BYTE[numSubkeys * 16];
-	initKeys(key);
+	initSchedule(key, numRounds);
 }
 
 KeySchedule::~KeySchedule() 
 {
 	delete[] schedule;
+}
+
+void KeySchedule::initSchedule(const Key key, int numRounds)
+{
+	if (numRounds > 0)
+	{
+		numSubkeys = numRounds + 1;
+		schedule = new BYTE[numSubkeys * 16];
+		initKeys(key);
+	}
 }
 
 void KeySchedule::initKeys(const Key privateKey)
