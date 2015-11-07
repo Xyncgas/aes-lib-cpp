@@ -84,7 +84,8 @@ BYTE Structure::inverseMixColMatrix[4][4] =
 
 BYTE Structure::getRconEntry(int index)
 {
-	return rcon[index];
+	BYTE rc = rcon[index];
+	return rc;
 }
 
 BYTE Structure::getMixColEntry(int row, int column, Mode mode)
@@ -101,6 +102,7 @@ BYTE Structure::getSboxEntry(int row, int column, Mode mode)
 {
 	if (mode == Mode::ENCRYPT)
 		return BYTE(sbox[row][column]);
+	
 
 	else
 		return BYTE(inverseSbox[row][column]);
@@ -129,6 +131,15 @@ void Structure::printState(const State state)
 		for (int col = 0; col < 4; col++)
 			printf("%s ", state[row][col].to_string().c_str());
 		printf("\n");
+	}
+}
+
+void Structure::printStatesString(State *states, int numStates)
+{
+	for (int i = 0; i < numStates; i++)
+	{
+		string changed = Structure::stateToString(states[i]);
+		cout << changed;
 	}
 }
 
@@ -189,7 +200,7 @@ void Structure::addState(State &a, const State b)
 {
 	for (int row = 0; row < 4; row++)
 		for (int col = 0; col < 4; col++)
-			a[col][row] ^= b[col][row];
+			a[col][row] ^= b[col][ row];
 }
 
 void Structure::copyState(State &a, State &b)

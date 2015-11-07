@@ -28,6 +28,8 @@ public:
 
 	static void printState(const State state);
 
+	static void printStatesString(State *states, int numStates);
+
 	static void makeState(BYTE str[16], State &state);
 
 	static void addState(State &a, const State b);

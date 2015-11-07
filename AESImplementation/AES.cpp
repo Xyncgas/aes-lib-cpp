@@ -72,6 +72,7 @@ void AES::decrypt(State &state, KeySchedule &schedule, KeyLength length)
 	int numRounds = getNumRounds(length);
 	Key roundKey;
 
+
 	//Perform inverse internals for numRounds
 	for (int round = numRounds; round > 0; round--)
 	{
@@ -80,13 +81,19 @@ void AES::decrypt(State &state, KeySchedule &schedule, KeyLength length)
 		schedule.setRoundKey(round, roundKey);
 		Structure::addState(state, roundKey);
 
-
 		//Difussion components
 		//---------------------------------------------------
 		//Inverse mix columns layer
 		//Only performed on rounds 1..numRounds-1
 		if (round != numRounds)
 			Engine::mixColumns(state, Mode::DECRYPT);
+
+		if (round == numRounds - 1)
+		{
+			std::cout << "\noutput block:\n";
+			Structure::printState(state);
+			std::cout << "\n";
+		}
 
 		//Inverse shift rows layer
 		Engine::shiftRows(state, Mode::DECRYPT);
@@ -96,8 +103,8 @@ void AES::decrypt(State &state, KeySchedule &schedule, KeyLength length)
 		//Confusion component
 		//Inverse byte substitution layer
 		Engine::byteSub(state, Mode::DECRYPT);
-
 	}
+
 
 	//Add round 0 key
 	//--------------------------------------------

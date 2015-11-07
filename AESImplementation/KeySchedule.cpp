@@ -14,16 +14,23 @@ KeySchedule::~KeySchedule()
 	delete[] schedule;
 }
 
+//initialzes the schedule arr and adds the sub keys
 void KeySchedule::initSchedule(const Key key, int numRounds)
 {
 	if (numRounds > 0)
 	{
-		numSubkeys = numRounds + 1;
+		//number of sub/round keys in the schedule
+		numSubkeys = numRounds + 1; 
+
+		//schedule to hold the subkeys
 		schedule = new BYTE[numSubkeys * 16];
+
+		//adds the sub keys to schedule
 		initKeys(key);
 	}
 }
 
+//adds the sub keys generated from private key to the schedule
 void KeySchedule::initKeys(const Key privateKey)
 {
 	//Init first 16 bytes (first sub key) as private key
@@ -74,9 +81,10 @@ void KeySchedule::rotate(BYTE * word)
 	word[3] = temp;
 }
 
+//performs the core key schedule operations on the word
 void KeySchedule::core(BYTE * word, int i)
 {
-	//rotate left 1 byte
+	//rotate left 1 byte	
 	rotate(word);
 
 	//apply s box on word
@@ -84,17 +92,22 @@ void KeySchedule::core(BYTE * word, int i)
 	for (int j = 0; j < 4; j++)
 		word[j]	=	Structure::getSboxEntry(word[j], Mode::ENCRYPT);
 
+	
+
 	//xor round coefficient to left most byte
 	addRoundCoeff(word[0], i);
 }
 
-
+//gets the round coefficient at index i
+//returns the result of xor byte with rc
 BYTE KeySchedule::addRoundCoeff(BYTE &byte, int i)
 {
 	//xor byte with rcon entry at index i
-	return byte ^= Structure::getRconEntry(i);
+	BYTE result = byte ^ Structure::getRconEntry(i);
+	return result;
 }
 
+//set the key to the key at round roundNum
 void KeySchedule::setRoundKey(int roundNum, Key &key)
 {
 	int sIndex = (roundNum * 16);
@@ -103,11 +116,13 @@ void KeySchedule::setRoundKey(int roundNum, Key &key)
 			key[col][row] = schedule[sIndex++];
 }
 
+//makes the passed str into a key
 void KeySchedule::makeKey(BYTE *str, Key &key)
 {
 	Structure::makeState(str, key);
 }
 
+//return the number of sub/round keys in schedules
 int KeySchedule::getNumSubkeys()
 {
 	return numSubkeys;
