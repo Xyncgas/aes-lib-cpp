@@ -6,6 +6,9 @@
 
 using namespace std;
 
+//------------------------------------------------------------------------------------------------------
+//											AES S-BOX
+//------------------------------------------------------------------------------------------------------
 unsigned char Structure::sbox[16][16] =
 {
 	{ 0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76 },
@@ -25,7 +28,13 @@ unsigned char Structure::sbox[16][16] =
 	{ 0xE1, 0xF8, 0x98, 0x11, 0x69, 0xD9, 0x8E, 0x94, 0x9B, 0x1E, 0x87, 0xE9, 0xCE, 0x55, 0x28, 0xDF },
 	{ 0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16 }
 };
+//------------------------------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------------------------------
+//										AES INVERSE S-BOX
+//------------------------------------------------------------------------------------------------------
 unsigned char Structure::inverseSbox[16][16] =
 {
 	{ 0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5, 0x38, 0xBF, 0x40, 0xA3, 0x9E, 0x81, 0xF3, 0xD7, 0xFB },
@@ -45,7 +54,13 @@ unsigned char Structure::inverseSbox[16][16] =
 	{ 0xA0, 0xE0, 0x3B, 0x4D, 0xAE, 0x2A, 0xF5, 0xB0, 0xC8, 0xEB, 0xBB, 0x3C, 0x83, 0x53, 0x99, 0x61 },
 	{ 0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D }
 };
+//------------------------------------------------------------------------------------------------------
 
+
+
+//------------------------------------------------------------------------------------------------------
+//											ROUND COEFFICIENTS 
+//------------------------------------------------------------------------------------------------------
 unsigned char Structure::rcon[256] =
 {
 	0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a,
@@ -65,7 +80,10 @@ unsigned char Structure::rcon[256] =
 	0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd,
 	0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d
 };
+//------------------------------------------------------------------------------------------------------
 
+
+//Mix column matrix used in MixColumns layer
 BYTE Structure::mixColMatrix[4][4] = 
 {
 	{ 0x02, 0x03, 0x01, 0x01 },
@@ -74,6 +92,8 @@ BYTE Structure::mixColMatrix[4][4] =
 	{ 0x03, 0x01, 0x01, 0x02 }
 };
 
+//Inverse mix columns matrix used in InverseMixColumns layer
+//Values are the inverse in GF(2^8) of those in mixColMatrix 
 BYTE Structure::inverseMixColMatrix[4][4] = 
 {
 	{ 0x0e, 0x0b, 0x0d, 0x09 },
@@ -82,12 +102,15 @@ BYTE Structure::inverseMixColMatrix[4][4] =
 	{ 0x0b, 0x0d, 0x09, 0x0e }
 };
 
+//Returns the round coefficient at index
 BYTE Structure::getRconEntry(int index)
 {
 	BYTE rc = rcon[index];
 	return rc;
 }
 
+//Returns the mix column entry a[row][column]
+//returns the inverse value if Mode::DECRYPT
 BYTE Structure::getMixColEntry(int row, int column, Mode mode)
 {
 	if (mode == Mode::ENCRYPT)
@@ -98,17 +121,20 @@ BYTE Structure::getMixColEntry(int row, int column, Mode mode)
 	
 }
 
+//Returns the s-box entry a[row][column]
+//returns the inverse value if Mode::DECRYPT
 BYTE Structure::getSboxEntry(int row, int column, Mode mode)
 {
 	if (mode == Mode::ENCRYPT)
 		return BYTE(sbox[row][column]);
-	
 
 	else
 		return BYTE(inverseSbox[row][column]);
 }
 
-
+//Returns the sbox entry for the bin
+//row and column of s-box table are derived from bin
+//left-most bits = row, right-most bits = column
 BYTE Structure::getSboxEntry(BYTE bin, Mode mode)
 {
 	int row =	BYTE(bin.to_string().substr(0, 4)).to_ulong();
@@ -117,6 +143,7 @@ BYTE Structure::getSboxEntry(BYTE bin, Mode mode)
 	return getSboxEntry(row, col, mode);
 }
 
+//Prints out the 4 bytes in row
 void Structure::printRow(BYTE *row)
 {
 	for (int col = 0; col < 4; col++)
@@ -124,6 +151,7 @@ void Structure::printRow(BYTE *row)
 	printf("\n");
 }
 
+//Prints out the state 4x4 matrix 
 void Structure::printState(const State state)
 {
 	for (int row = 0; row < 4; row++)
@@ -134,6 +162,8 @@ void Structure::printState(const State state)
 	}
 }
 
+//Prints out the string represented by the states
+//numStates: size(states)
 void Structure::printStatesString(State *states, int numStates)
 {
 	for (int i = 0; i < numStates; i++)
@@ -143,6 +173,8 @@ void Structure::printStatesString(State *states, int numStates)
 	}
 }
 
+
+//Adds the bytes in str into the passed state
 void Structure::makeState(BYTE str[16], State &state)
 {
 	int i = 0;
@@ -151,6 +183,7 @@ void Structure::makeState(BYTE str[16], State &state)
 			state[col][row] = str[i++];
 };
 
+//Creates states from the string
 State * Structure::makeStates(string text)
 {
 	int length = text.length();
@@ -170,6 +203,7 @@ State * Structure::makeStates(string text)
 	return st;
 }
 
+//Returns the string value of the state
 string Structure::stateToString(State state)
 {
 	string str;
@@ -180,11 +214,13 @@ string Structure::stateToString(State state)
 	return str;
 }
 
+//returns the number of states (blocks) needed for the text
 int Structure::getNumStates(const string text)
 {
 	return ceil((double) text.length() / 16);
 }
 
+//returns the column at colNum in the matrix
 vector<BYTE> Structure::getColumn(const State matrix, int colNum)
 {
 	vector<BYTE> column;
@@ -196,6 +232,8 @@ vector<BYTE> Structure::getColumn(const State matrix, int colNum)
 	return column;
 }
 
+//Performs matrix/state addition in GF(2^8)
+//Each entry is xor'd with the corresponding entry
 void Structure::addState(State &a, const State b)
 {
 	for (int row = 0; row < 4; row++)
@@ -203,6 +241,7 @@ void Structure::addState(State &a, const State b)
 			a[col][row] ^= b[col][ row];
 }
 
+//Copies the state b into a
 void Structure::copyState(State &a, State &b)
 {
 	for (int row = 0; row < 4; row++)

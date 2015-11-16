@@ -8,6 +8,7 @@
 using namespace System;
 using namespace std;
 
+//encrypts state block, where schedule is not init 
 void AES::encrypt(State &plainState, KeySchedule &schedule, Key &privateKey, KeyLength length)
 {
 	int numRounds	=	getNumRounds(length);
@@ -15,6 +16,8 @@ void AES::encrypt(State &plainState, KeySchedule &schedule, Key &privateKey, Key
 	encrypt(plainState, schedule, length);
 }
 
+//encrypts the state block with an init schedule
+//is the core encrypt function
 void AES::encrypt(State &state, KeySchedule &schedule, KeyLength length)
 {
 
@@ -51,6 +54,7 @@ void AES::encrypt(State &state, KeySchedule &schedule, KeyLength length)
 	}
 }
 
+//encrypts the passed plain text bytes and key bytes
 void AES::encrypt(State &state, KeySchedule &schedule, Key &key, BYTE bytes[16], BYTE privateKey[16], KeyLength length)
 {
 	Structure::makeState(bytes, state);
@@ -59,6 +63,7 @@ void AES::encrypt(State &state, KeySchedule &schedule, Key &key, BYTE bytes[16],
 	AES::encrypt(state, schedule, key, length);
 }
 
+//decrypts the plain text bytes and private key bytes
 void AES::decrypt(State &state, KeySchedule &schedule, Key &key, BYTE bytes[16], BYTE privateKey[16], KeyLength length)
 {
 	Structure::makeState(bytes, state);
@@ -67,6 +72,8 @@ void AES::decrypt(State &state, KeySchedule &schedule, Key &key, BYTE bytes[16],
 	AES::decrypt(state, schedule, key, length);
 }
 
+//decrypts the state block where schedule is init
+//is the core decrypt function
 void AES::decrypt(State &state, KeySchedule &schedule, KeyLength length)
 {
 	int numRounds = getNumRounds(length);
@@ -88,13 +95,6 @@ void AES::decrypt(State &state, KeySchedule &schedule, KeyLength length)
 		if (round != numRounds)
 			Engine::mixColumns(state, Mode::DECRYPT);
 
-		if (round == numRounds - 1)
-		{
-			std::cout << "\noutput block:\n";
-			Structure::printState(state);
-			std::cout << "\n";
-		}
-
 		//Inverse shift rows layer
 		Engine::shiftRows(state, Mode::DECRYPT);
 		//--------------------------------------------------- 
@@ -113,6 +113,7 @@ void AES::decrypt(State &state, KeySchedule &schedule, KeyLength length)
 	//-------------------------------------------- 
 }
 
+//encrypts state block, where schedule is not init 
 void AES::decrypt(State &cipherState, KeySchedule &schedule, Key &privateKey, KeyLength length)
 {
 	int numRounds = getNumRounds(length);
@@ -120,6 +121,7 @@ void AES::decrypt(State &cipherState, KeySchedule &schedule, Key &privateKey, Ke
 	decrypt(cipherState, schedule, length);
 }
 
+//encrypt the states in CBC mode
 void AES::encrypt_cbc(std::vector<State*> &plainText, Key &privateKey, State &initialVector, KeyLength length)
 {
 	int numRounds		=	getNumRounds(length);
@@ -145,6 +147,7 @@ void AES::encrypt_cbc(std::vector<State*> &plainText, Key &privateKey, State &in
 	}
 }
 
+//decrypts the states in CBC mode
 void AES::decrypt_cbc(std::vector<State*> &plainText, Key &privateKey, State &initialVector, KeyLength length)
 {
 	int numRounds = getNumRounds(length);
