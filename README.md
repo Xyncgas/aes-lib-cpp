@@ -29,7 +29,7 @@ void AES::decryptMessage(std::vector<State*> &text, Key &privateKey, State &init
 
 ### Data type aliases
 There are several noteable data type aliases used in aes-lib-cpp
-- BYTE: `std::bitset<8>
+- BYTE: `std::bitset<8>`
 - State: `BYTE[4][4]`
 - Key: `BYTE[4][4]`
 
