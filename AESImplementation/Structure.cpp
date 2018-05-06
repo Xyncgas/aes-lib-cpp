@@ -173,7 +173,6 @@ void Structure::printStatesString(State *states, int numStates)
 	}
 }
 
-
 //Adds the bytes in str into the passed state
 void Structure::makeState(BYTE str[16], State &state)
 {
@@ -181,6 +180,7 @@ void Structure::makeState(BYTE str[16], State &state)
 	for (int row = 0; row < 4; row++)
 		for (int col = 0; col < 4; col++)
 			state[col][row] = str[i++];
+
 };
 
 //Creates states from the string

@@ -119,10 +119,12 @@ void AES::decrypt(State &cipherState, KeySchedule &schedule, Key &privateKey, Ke
 	int numRounds = getNumRounds(length);
 	schedule.initSchedule(privateKey, numRounds);
 	decrypt(cipherState, schedule, length);
+	
+	State initialVector;
 }
 
 //encrypt the states in CBC mode
-void AES::encrypt_cbc(std::vector<State*> &plainText, Key &privateKey, State &initialVector, KeyLength length)
+void AES::encryptMessage(std::vector<State*> &plainText, Key &privateKey, State &initialVector, KeyLength length)
 {
 	int numRounds		=	getNumRounds(length);
 	std::vector<State*>::size_type numBlocks	=	plainText.size();
@@ -148,7 +150,7 @@ void AES::encrypt_cbc(std::vector<State*> &plainText, Key &privateKey, State &in
 }
 
 //decrypts the states in CBC mode
-void AES::decrypt_cbc(std::vector<State*> &plainText, Key &privateKey, State &initialVector, KeyLength length)
+void AES::decryptMessage(std::vector<State*> &plainText, Key &privateKey, State &initialVector, KeyLength length)
 {
 	int numRounds = getNumRounds(length);
 	typedef std::vector<State*>::size_type v_size;

@@ -18,7 +18,7 @@ public:
 	static void encrypt(State &state, KeySchedule &schedule, Key &privateKey, BYTE bytes[16], BYTE privateKeyBytes[16], KeyLength length);
 
 	//encrypt the states in CBC mode
-	static void encrypt_cbc(std::vector<State*> &plainText, Key &privateKey, State &initialVector, KeyLength length);
+	static void encryptMessage(std::vector<State*> &plainText, Key &privateKey, State &initialVector, KeyLength length);
 
 	//decrypts the state block where schedule is init
 	//is the core decrypt function
@@ -31,7 +31,7 @@ public:
 	static void decrypt(State &state, KeySchedule &schedule, Key &privateKey, KeyLength length);
 
 	//decrypts the states in CBC mode
-	static void decrypt_cbc(std::vector<State*> &plainText, Key &privateKey, State &initialVector, KeyLength length);
+	static void decryptMessage(std::vector<State*> &plainText, Key &privateKey, State &initialVector, KeyLength length);
 
 	//returns the number of rounds relative to the key length
 	static int getNumRounds(KeyLength length);
